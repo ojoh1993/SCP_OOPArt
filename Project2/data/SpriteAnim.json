@@ -1,0 +1,51 @@
+{
+  "asdf": {
+    "cols": 12,
+    "rows": 8,
+    "anchorX": 0.5,
+    "anchorY": 1,
+    "sampleImg": "C:\\Users\\LG\\Documents\\Games\\Project2\\img\\characters\\Actor1.png",
+    "poses": {
+      "move2": {
+        "speed": 15,
+        "adjust": false,
+        "pattern": [
+          0,
+          1,
+          2,
+          1
+        ]
+      },
+      "move4": {
+        "speed": 15,
+        "adjust": false,
+        "pattern": [
+          12,
+          13,
+          14,
+          13
+        ]
+      },
+      "move6": {
+        "speed": 15,
+        "adjust": false,
+        "pattern": [
+          24,
+          25,
+          26,
+          25
+        ]
+      },
+      "move8": {
+        "speed": 15,
+        "adjust": false,
+        "pattern": [
+          36,
+          37,
+          38,
+          37
+        ]
+      }
+    }
+  }
+}

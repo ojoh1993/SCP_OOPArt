@@ -1695,6 +1695,9 @@ RS.HUD.param = RS.HUD.param || {};
           case 'export':
             RS.HUD.exportData(args[1] + '.json');
             break;
+          case 'refresh':
+            $gameTemp.notifyHudRefresh();
+            break;
         }
       }
   };

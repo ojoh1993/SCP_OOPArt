@@ -3167,9 +3167,10 @@ var QuasiABS = {};
     var y = this.event().y * QuasiMovement.tileSize;
     var dist = this.moveTiles();
     this._through = false;
+    /*
     while (true) {
       var stop;
-      for (var i = 4; i < 5; i++) {
+      for (var i = 1; i < 5; i++) {
         var dir = i * 2;
         var x2 = $gameMap.roundPXWithDirection(x, dir, dist);
         var y2 = $gameMap.roundPYWithDirection(y, dir, dist);
@@ -3180,7 +3181,9 @@ var QuasiABS = {};
       }
       if (stop) break;
       dist += this.moveTiles();
-    }
+    }*/
+    var x2=x;
+    var y2=y;
     this.setPixelPosition(x2, y2);
     this.straighten();
     this.refreshBushDepth();

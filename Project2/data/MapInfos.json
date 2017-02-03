@@ -7,5 +7,10 @@ null,
 {"id":5,"expanded":false,"name":"StartMap03","order":5,"parentId":2,"scrollX":819,"scrollY":461.5},
 {"id":6,"expanded":false,"name":"elevator","order":6,"parentId":2,"scrollX":819,"scrollY":461.5},
 {"id":7,"expanded":true,"name":"Reactor","order":7,"parentId":2,"scrollX":819,"scrollY":461.5},
-{"id":8,"expanded":false,"name":"Reactor01","order":8,"parentId":7,"scrollX":819,"scrollY":461.5}
+{"id":8,"expanded":true,"name":"Reactor_up","order":8,"parentId":7,"scrollX":819,"scrollY":461.5},
+{"id":9,"expanded":false,"name":"Reactor_down","order":9,"parentId":7,"scrollX":819,"scrollY":461.5},
+{"id":10,"expanded":false,"name":"Reactor_left","order":10,"parentId":7,"scrollX":832,"scrollY":640},
+{"id":11,"expanded":false,"name":"Reactor_right","order":11,"parentId":7,"scrollX":819,"scrollY":461.5},
+{"id":12,"expanded":false,"name":"Reactor_Top","order":12,"parentId":7,"scrollX":0,"scrollY":0},
+{"id":13,"expanded":false,"name":"World2","order":13,"parentId":0,"scrollX":819,"scrollY":461.5}
 ]

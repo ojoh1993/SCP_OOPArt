@@ -3212,18 +3212,53 @@ var QuasiABS = {};
 
   Game_Event.prototype.setupLoot = function() {
     var x, y;
+    var BasictileSize=48;
     this.battler().makeDropItems().forEach(function(item) {
-      x = this.x + (Math.random() / 2) - (Math.random() / 2);
-      y = this.y + (Math.random() / 2) - (Math.random() / 2);
+      x = (this.x + (Math.random() / 2) - (Math.random() / 2))*BasictileSize;
+      y = (this.y + (Math.random() / 2) - (Math.random() / 2))*BasictileSize;
       var type = 0;
+      var dist = this.moveTiles();
+      var x2,y2;
+      this._through=false;
+      while (true) {
+        var stop;
+        for (var i = 1; i < 5; i++) {
+          var dir = i * 2;
+          x2 = $gameMap.roundPXWithDirection(x, dir, dist);
+          y2 = $gameMap.roundPYWithDirection(y, dir, dist);
+          if (this.canPixelPass(x2, y2, 5)) {
+            stop = true;
+            break;
+          }
+        }
+        if (stop) break;
+        dist += this.moveTiles();
+      }
       if (DataManager.isWeapon(item)) type = 1;
       if (DataManager.isArmor(item))  type = 2;
-      QuasiABS.Manager.createItem(x, y, item.id, type);
+      QuasiABS.Manager.createItem(x2/BasictileSize, y2/BasictileSize, item.id, type);
     }, this);
     if (this.battler().gold() > 0) {
-      x = this.x + (Math.random() / 2) - (Math.random() / 2);
-      y = this.y + (Math.random() / 2) - (Math.random() / 2);
-      QuasiABS.Manager.createGold(x, y, this.battler().gold());
+      x = (this.x + (Math.random() / 2) - (Math.random() / 2))*BasictileSize;
+      y = (this.y + (Math.random() / 2) - (Math.random() / 2))*BasictileSize;
+      var dist = this.moveTiles();
+      var x2,y2;
+      this._through=false;
+      while (true) {
+        var stop;
+        for (var i = 1; i < 5; i++) {
+          var dir = i * 2;
+          x2 = $gameMap.roundPXWithDirection(x, dir, dist);
+          y2 = $gameMap.roundPYWithDirection(y, dir, dist);
+          if (this.canPixelPass(x2, y2, 5)) {
+            stop = true;
+            break;
+          }
+        }
+        if (stop) break;
+        dist += this.moveTiles();
+      }
+      QuasiABS.Manager.createGold(x2/BasictileSize, y2/BasictileSize, this.battler().gold());
     }
   };
 

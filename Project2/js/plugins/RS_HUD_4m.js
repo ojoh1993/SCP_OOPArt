@@ -1,6 +1,6 @@
 /*:
  * RS_HUD_4m.js
- * @plugindesc (v1.2.0) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
+ * @plugindesc (v1.2.2) This plugin draws the HUD, which displays the hp and mp and exp and level of each party members.
  *
  * @author biud436
  *
@@ -157,6 +157,10 @@
  * @desc
  * @default ------/------
  *
+ * @param Max Members
+ * @desc
+ * @default 4
+ *
  * @param --- Font
  * @desc
  * @default
@@ -287,19 +291,43 @@
  *
  * @param Custom Pos 1
  * @desc
- * @default 0, 0
+ * @default 0, (H * 0) + PD
  *
  * @param Custom Pos 2
  * @desc
- * @default 0, 110
+ * @default 0, (H * 1) + PD
  *
  * @param Custom Pos 3
  * @desc
- * @default 0, 220
+ * @default 0, (H * 2) + PD
  *
  * @param Custom Pos 4
  * @desc
- * @default 0, 330
+ * @default 0, (H * 3) + PD
+ *
+ * @param Custom Pos 5
+ * @desc
+ * @default 0, (H * 4) + PD
+ *
+ * @param Custom Pos 6
+ * @desc
+ * @default W + PD, (H * 0) + PD
+ *
+ * @param Custom Pos 7
+ * @desc
+ * @default W + PD, (H * 1) + PD
+ *
+ * @param Custom Pos 8
+ * @desc
+ * @default W + PD, (H * 2) + PD
+ *
+ * @param Custom Pos 9
+ * @desc
+ * @default W + PD, (H * 3) + PD
+ *
+ * @param Custom Pos 10
+ * @desc
+ * @default W + PD, (H * 4) + PD
  *
  * @help
  * =============================================================================
@@ -384,17 +412,22 @@
  * 2016.12.19 (v1.1.8b) - Fixed a bug that is not set up the coordinates of the face image.
  * 2016.12.22 (v1.1.9) :
  * - Now this plugin does not provide the functionality to automatically adjust transparency and tone changes due to poor performance in canvas mode of mobile device.
- * - The text elements perform an update through the event handler.
+ * - The text elements perform an update through the event handler.
  * - Fixed an issue that plugins did not work due to image position data parsing errors in crosswalk.
  * - Fixed an issue that can not be saved due to this update.
  * 2017.01.06 (v1.2.0) :
  * - Fixed to redraw the Hud when using the $gameParty.swapOrder method.
  * - Fixed the hud to process the refresh when the event lisnter listens a refresh request.
  *   $gameHud.refresh() -> $gameTemp.notifyHudRefresh();
+ * 2017.01.25 (v1.2.1) - Fixed a bug that causes the null when 'battle only' parameter is true.
+ * 2017.01.26 (v1.2.2) :
+ * - Fixed a bug that is not working to preload
+ * - Added a new parameter that could increase the number of the HUD.
+ * - Added parameters for user custom HUD position.
  */
 
 var Imported = Imported || {};
-Imported.RS_HUD_4m = '1.2.0';
+Imported.RS_HUD_4m = '1.2.2';
 
 var $gameHud = null;
 var RS = RS || {};
@@ -420,13 +453,6 @@ RS.HUD.param = RS.HUD.param || {};
     var y = parseFloat(RegExp.$2);
     var visible = Boolean(String(RegExp.$3).contains('true'));
     return {'x': x, 'y': y, 'visible': visible};
-  };
-
-  RS.HUD.loadCustomPosition = function (szRE) {
-    var target = szRE.match(/(.*),(.*)/i);
-    var x = parseFloat(RegExp.$1) || 0;
-    var y = parseFloat(RegExp.$2) || 0;
-    return new Point(x, y);
   };
 
   RS.HUD.loadRealNumber = function (paramName, val) {
@@ -463,6 +489,8 @@ RS.HUD.param = RS.HUD.param || {};
   RS.HUD.param.battleOnly = Boolean(parameters['Battle Only'] === "true");
   RS.HUD.param.showComma = Boolean(parameters['Show Comma'] === 'true');
   RS.HUD.param.maxExpText = String(parameters['Max Exp Text'] || "------/------");
+
+  RS.HUD.param.nMaxMembers = parseInt(parameters["Max Members"] || 4);
 
   RS.HUD.getDefaultHUDAnchor = function () {
     var anchor = {
@@ -515,12 +543,19 @@ RS.HUD.param = RS.HUD.param || {};
   // Custom HUD Anchor
   RS.HUD.param.ptCustormAnchor = [];
 
-  for(var i = 0; i < 4; i++) {
-    RS.HUD.param.ptCustormAnchor.push( RS.HUD.loadCustomPosition(parameters['Custom Pos ' + (i + 1)] || '0, 0') );
-  }
-
   RS.HUD.param.isCurrentBattleShowUp = false;
   RS.HUD.param.isPreviousShowUp = false;
+
+  RS.HUD.loadCustomPosition = function (szRE) {
+    var W = RS.HUD.param.nWidth;
+    var H = RS.HUD.param.nHeight;
+    var PD = RS.HUD.param.nPD;
+    var BW = Graphics.boxWidth || 816;
+    var BH = Graphics.boxHeight || 624;
+    var x = eval('[' + szRE + ']');
+    if(x instanceof Array) return new Point(x[0], x[1]);
+    return new Point(0, 0);
+  };
 
   // Opacity and Tone  Glitter Settings
   var nOpacityEps = 5;
@@ -1184,6 +1219,44 @@ RS.HUD.param = RS.HUD.param || {};
   });
 
   //----------------------------------------------------------------------------
+  // RS_EmptyHudLayer
+  //
+  //
+
+  function RS_EmptyHudLayer() {
+    this.initialize.apply(this, arguments);
+  }
+
+  RS_EmptyHudLayer.prototype = Object.create(Sprite.prototype);
+  RS_EmptyHudLayer.prototype.constructor = RS_EmptyHudLayer;
+
+  RS_EmptyHudLayer.prototype.initialize = function(bitmap) {
+    Sprite.prototype.initialize.call(this, bitmap);
+    this.alpha = 0;
+  };
+
+  RS_EmptyHudLayer.prototype.constructor = RS_EmptyHudLayer;
+
+  Object.defineProperty(RS_EmptyHudLayer.prototype, 'show', {
+      get: function() {
+          return $gameSystem._rs_hud.show;
+      },
+      set: function(value) {
+          $gameSystem._rs_hud.show = value;
+      }
+  });
+
+  Object.defineProperty(RS_EmptyHudLayer.prototype, 'opacity', {
+      get: function() {
+          return $gameSystem._rs_hud.opacity;
+      },
+      set: function(value) {
+          $gameSystem._rs_hud.opacity = value.clamp(0, 255);
+      }
+  });
+
+
+  //----------------------------------------------------------------------------
   // TouchInput
   //
   //
@@ -1241,8 +1314,9 @@ RS.HUD.param = RS.HUD.param || {};
     var anchor = RS.HUD.getDefaultHUDAnchor();
 
     // Add Custom Anchor
-    for(var i = 0; i < 4; i++) {
-      anchor['Custom Pos ' + (i + 1)] = RS.HUD.param.ptCustormAnchor[i];
+    for(var i = 0; i < RS.HUD.param.nMaxMembers; i++) {
+      var idx = parseInt(i + 1);
+      anchor['Custom Pos ' + idx] = RS.HUD.param.ptCustormAnchor[i];
     }
 
     return anchor[magnet];
@@ -1528,7 +1602,7 @@ RS.HUD.param = RS.HUD.param || {};
       var vt = Vector2.quadraticBezier(this._vtA, this._vtB, this._vtA, t);
       obj.setColorTone([vt.x, vt.x, vt.x, 0]);
     } else {
-      obj.setColorTone([this._vtA.x, this._vtA.x, this._vtA.x, 0]);
+      if(obj) obj.setColorTone([this._vtA.x, this._vtA.x, this._vtA.x, 0]);
     }
   }
 
@@ -1583,10 +1657,12 @@ RS.HUD.param = RS.HUD.param || {};
   // Scene_Map
   //
   //
-  var _Scene_Map_createDisplayObjects = Scene_Map.prototype.createDisplayObjects;
+  var alias_Scene_Map_createDisplayObjects = Scene_Map.prototype.createDisplayObjects;
   Scene_Map.prototype.createDisplayObjects = function() {
-    _Scene_Map_createDisplayObjects.call(this);
-    if(!RS.HUD.param.battleOnly) {
+    alias_Scene_Map_createDisplayObjects.call(this);
+    if(RS.HUD.param.battleOnly) {
+      $gameHud = new RS_EmptyHudLayer();
+    } else {
       this._hudLayer = new RS_HudLayer();
       this._hudLayer.setFrame(0, 0, Graphics.boxWidth, Graphics.boxHeight);
 
@@ -1598,13 +1674,11 @@ RS.HUD.param = RS.HUD.param || {};
     }
   };
 
-  var _Scene_Map_terminate = Scene_Map.prototype.terminate;
+  var alias_Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function() {
-    // if(!RS.HUD.param.battleOnly) {
-      this.removeChild(this._hudLayer);
-      $gameHud = null;
-    // }
-    _Scene_Map_terminate.call(this);
+    this.removeChild(this._hudLayer);
+    $gameHud = null;
+    alias_Scene_Map_terminate.call(this);
   };
 
   //----------------------------------------------------------------------------
@@ -1628,15 +1702,29 @@ RS.HUD.param = RS.HUD.param || {};
   // Scene_Boot
   //
   //
-  var _Scene_Boot_loadSystemImages = Scene_Boot.prototype.loadSystemImages;
-  Scene_Boot.prototype.loadSystemImages = function() {
-    _Scene_Boot_loadSystemImages.call(this);
+  var alias_Scene_Boot_loadSystemWindowImage = Scene_Boot.prototype.loadSystemWindowImage;
+  Scene_Boot.prototype.loadSystemWindowImage = function() {
+    alias_Scene_Boot_loadSystemWindowImage.call(this);
+
+    // Load Custom Font
     if(RS.HUD.param.bUseCustomFont) {
       Graphics.loadFont(RS.HUD.param.szCustomFontName, RS.HUD.param.szCustomFontSrc);
     }
+
+    // Load Face
     RS.HUD.param.preloadImportantFaces.forEach(function(i) {
       ImageManager.loadFace(i);
     }, this);
+
+  };
+
+  var alias_Scene_Boot_start = Scene_Boot.prototype.start;
+  Scene_Boot.prototype.start = function() {
+    alias_Scene_Boot_start.call(this);
+    // Load Custom Anchor
+    for(var i = 0; i < RS.HUD.param.nMaxMembers; i++) {
+      RS.HUD.param.ptCustormAnchor.push( RS.HUD.loadCustomPosition(parameters[String('Custom Pos ' + (i + 1))] || '0, 0') );
+    }
   };
 
   //----------------------------------------------------------------------------
@@ -1660,19 +1748,19 @@ RS.HUD.param = RS.HUD.param || {};
   Scene_Map.prototype.updateFade = function() {
     alias_Scene_Map_updateFade.call(this);
     if(this._fadeDuration == 0 && RS.HUD.param.isCurrentBattleShowUp) {
-      $gameHud.show = RS.HUD.param.isPreviousShowUp;
+      if($gameHud) $gameHud.show = RS.HUD.param.isPreviousShowUp;
       RS.HUD.param.isCurrentBattleShowUp = false;
     }
-  }
+  };
 
   var alias_Scene_Battle_updateFade = Scene_Battle.prototype.updateFade;
   Scene_Battle.prototype.updateFade = function() {
     alias_Scene_Battle_updateFade.call(this);
     if(this._fadeDuration == 0 && !RS.HUD.param.isCurrentBattleShowUp) {
-      $gameHud.show = true;
+      if($gameHud) $gameHud.show = true;
       RS.HUD.param.isCurrentBattleShowUp = true;
     }
-  }
+  };
 
   //----------------------------------------------------------------------------
   // Game_Interpreter
@@ -1694,9 +1782,6 @@ RS.HUD.param = RS.HUD.param || {};
             break;
           case 'export':
             RS.HUD.exportData(args[1] + '.json');
-            break;
-          case 'refresh':
-            $gameTemp.notifyHudRefresh();
             break;
         }
       }

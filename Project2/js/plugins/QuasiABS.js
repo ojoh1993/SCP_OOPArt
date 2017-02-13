@@ -2421,7 +2421,7 @@ var QuasiABS = {};
     for (var charaId in this._agroList) {
       if (!this._agroList.hasOwnProperty(charaId)) continue;
       var chara = charaId == 0 ? $gamePlayer : $gameMap.event(charaId);
-      chara.removeAgro(this === $gamePlayer ? 0 : this.eventId());
+      if (chara) chara.removeAgro(this === $gamePlayer ? 0 : this.eventId());
     }
     this._agroList = {};
     this._inCombat = false;
@@ -3168,7 +3168,7 @@ var QuasiABS = {};
     var y = this.event().y * QuasiMovement.tileSize;
     var dist = this.moveTiles();
     this._through = false;
-    /*
+   
     while (true) {
       var stop;
       for (var i = 1; i < 5; i++) {
@@ -3182,9 +3182,7 @@ var QuasiABS = {};
       }
       if (stop) break;
       dist += this.moveTiles();
-    }*/
-    var x2=x;
-    var y2=y;
+    }
     this.setPixelPosition(x2, y2);
     this.straighten();
     this.refreshBushDepth();

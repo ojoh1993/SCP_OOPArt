@@ -893,6 +893,7 @@ var QuasiABS = {};
     var rotate  = settings.rotate === true;
     var offset  = Number(settings.offset || 0);
     var horz    = [4, 6].contains(self._direction);
+
     if (rotate && horz) {
       w = height;
       h = width;
@@ -933,7 +934,7 @@ var QuasiABS = {};
         x1 += aiRange * (self._direction === 4 ? -1 : 0);
       } else {
         h += aiRange;
-        y1 += aiRange * (self._direction === 8 ? 1 : 0);
+        y1 += aiRange * (self._direction === 8 ? -1 : 0);
       }
       var range = new QuasiMovement.Box_Collider(w, h);
       range.moveto(x1, y1);
@@ -2316,6 +2317,7 @@ var QuasiABS = {};
     Alias_Game_Enemy_setup.call(this, enemyId, x, y);
     var notes = this.enemy().note;
     this._noai = /<noai>/i.test(notes);
+    this._disablemovement = /<disablemovement>/i.test(notes);
     this._aiRange = this.enemy().meta.range;
     this._noPopup = /<nopopup>/i.test(notes);
     var onDeath = /<ondeath>([\s\S]*)<\/ondeath>/i.exec(notes);
@@ -2703,7 +2705,9 @@ var QuasiABS = {};
 
   var Alias_Game_Character_canMove = Game_Character.prototype.canMove;
   Game_Character.prototype.canMove = function() {
-    if (this.battler() && this._skillLocked.length > 0) return false;
+    if (this.battler()){
+      if(this._skillLocked.length > 0) return false;      
+    } 
     return Alias_Game_Character_canMove.call(this);
   };
 

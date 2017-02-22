@@ -2263,16 +2263,21 @@ var QuasiMovement = {};
     if (this._smartMoveSpeed) this.smartMoveSpeed(d);
     this._radian = this.directionToRadian(d);
     if (this.isMovementSucceeded()) {
-      this._diagonal = false;
-      this.setDirection(d);
-      this._px = $gameMap.roundPXWithDirection(this._px, d, this.moveTiles());
-      this._py = $gameMap.roundPYWithDirection(this._py, d, this.moveTiles());
-      this._realPX = $gameMap.pxWithDirection(this._px, this.reverseDir(d), this.moveTiles());
-      this._realPY = $gameMap.pyWithDirection(this._py, this.reverseDir(d), this.moveTiles());
-      this._moveCount++;
-      this.increaseSteps();
-      if (this.constructor === Game_Player) {
-        this._followers.addMove(this._px, this._py, this.realMoveSpeed(), d);
+      if (this.hasOwnProperty('_battler')&&this._battler._locationFixed) {
+        this.setDirection(d);
+        this.checkEventTriggerTouchFront(d);
+      } else {
+        this._diagonal = false;
+        this.setDirection(d);
+        this._px = $gameMap.roundPXWithDirection(this._px, d, this.moveTiles());
+        this._py = $gameMap.roundPYWithDirection(this._py, d, this.moveTiles());
+        this._realPX = $gameMap.pxWithDirection(this._px, this.reverseDir(d), this.moveTiles());
+        this._realPY = $gameMap.pyWithDirection(this._py, this.reverseDir(d), this.moveTiles());
+        this._moveCount++;
+        this.increaseSteps();
+        if (this.constructor === Game_Player) {
+          this._followers.addMove(this._px, this._py, this.realMoveSpeed(), d);
+        }
       }
     } else {
       this.setDirection(d);

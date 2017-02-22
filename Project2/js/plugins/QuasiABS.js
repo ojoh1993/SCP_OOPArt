@@ -1242,6 +1242,9 @@ var QuasiABS = {};
   Skill_Sequencer.prototype.targetMove = function(action, targets) {
     var dist = Number(action[3]) || this._character.moveTiles();
     for (var i = 0; i < targets.length; i++) {
+      if(targets[i].hasOwnProperty("_battler")
+        && targets[i]._battler._locationFixed)
+        continue;
       dist -= dist * eval("targets[i].battler()." + QuasiABS.mrst);
       if (dist <= 0) return;
       var dx = targets[i]._px - this._character._px;
@@ -1286,6 +1289,9 @@ var QuasiABS = {};
   Skill_Sequencer.prototype.targetJump = function(action, targets) {
     var dist = Number(action[3]);
     for (var i = 0; i < targets.length; i++) {
+      if(targets[i].hasOwnProperty("_battler")
+        && targets[i]._battler._locationFixed)
+        continue;
       dist -= dist * eval("targets[i].battler()." + QuasiABS.mrst);
       if (dist <= 0) return;
       var dx = targets[i]._px - this._character._px;
@@ -2317,7 +2323,7 @@ var QuasiABS = {};
     Alias_Game_Enemy_setup.call(this, enemyId, x, y);
     var notes = this.enemy().note;
     this._noai = /<noai>/i.test(notes);
-    this._disablemovement = /<disablemovement>/i.test(notes);
+    this._locationFixed = /<locationFixed>/i.test(notes);
     this._aiRange = this.enemy().meta.range;
     this._noPopup = /<nopopup>/i.test(notes);
     var onDeath = /<ondeath>([\s\S]*)<\/ondeath>/i.exec(notes);

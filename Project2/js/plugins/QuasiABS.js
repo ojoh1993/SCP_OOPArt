@@ -817,6 +817,7 @@ var QuasiABS = {};
     return $gameMap.getCharactersAt(item.collider, function(chara) {
       if (!chara.battler()) return true;
       if (chara.battler().isDeathStateAffected()) return true;
+      if (item.hasOwnProperty("ondmg") && item.ondmg.contains("inflicts all")) return false;
       if ([1, 2, 3, 4, 5, 6].contains(item.data.scope)) {
         return chara === self || chara.isFriendly(self);
       }

@@ -3203,9 +3203,11 @@ var QuasiMovement = {};
       events.sort(function(a, b) {
         return a.pixelDistanceFrom(cx, cy) - b.pixelDistanceFrom(cx, cy);
       });
-      var event = events[0];
-      if (event.isTriggerIn(triggers) && event.isNormalPriority() === normal) {
-        event.start();
+      for(i=0;i<events.length;i++){
+        var event=events[i];
+        if (event.isTriggerIn(triggers) && event.isNormalPriority() === normal) {
+          event.start();
+        }
       }
       events = null;
     }

@@ -1,5 +1,5 @@
 {
-  "MainCharFieldMovement": {
+  "MainChar": {
     "cols": 12,
     "rows": 8,
     "anchorX": 0.5,

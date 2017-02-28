@@ -1,7 +1,12 @@
 [
 null,
-{"id":1,"list":[{"code":101,"indent":0,"parameters":["",0,0,2]},{"code":401,"indent":0,"parameters":["커먼 이벤트 테스트"]},{"code":0,"indent":0,"parameters":[]}],"name":"테스트","switchId":1,"trigger":0},
+{"id":1,"list":[{"code":101,"indent":0,"parameters":["",0,1,0]},{"code":401,"indent":0,"parameters":["아, 아."]},{"code":401,"indent":0,"parameters":["잘 들리나? 좋아."]},{"code":101,"indent":0,"parameters":["",0,1,0]},{"code":401,"indent":0,"parameters":["여기가 어딘지는 알고 있겠지?"]},{"code":401,"indent":0,"parameters":["인류가 세운 우주 식민지야. 우린 그 선발대고."]},{"code":401,"indent":0,"parameters":["여긴 사람이 그렇게 많이 사는 곳이 아니었어."]},{"code":101,"indent":0,"parameters":["",0,1,0]},{"code":401,"indent":0,"parameters":["사람은 없고, 해야 할 일은 산더미니 기계들과 같이"]},{"code":401,"indent":0,"parameters":["사이좋게 야근하며 일했지."]},{"code":401,"indent":0,"parameters":["그리고 그놈들이 고장나서 이 사단이 일어났어."]},{"code":101,"indent":0,"parameters":["",0,1,0]},{"code":401,"indent":0,"parameters":["식민지 선발대는 지금 전멸을 눈앞에 두고 있다."]},{"code":401,"indent":0,"parameters":["아마 이 메모를 듣게 될 때면 우린 전부 죽어 있겠군."]},{"code":101,"indent":0,"parameters":["",0,1,0]},{"code":401,"indent":0,"parameters":["임무를 주겠다."]},{"code":401,"indent":0,"parameters":["식민지 전체를 관장하던 AI가 반란을 일으켰어."]},{"code":401,"indent":0,"parameters":["그 고장난 AI를 교체해라."]},{"code":101,"indent":0,"parameters":["",0,1,0]},{"code":401,"indent":0,"parameters":["나머지 자세한 건(총성)..."]},{"code":401,"indent":0,"parameters":["...이쪽으로 오게."]},{"code":401,"indent":0,"parameters":["[음성 메모 끝]"]},{"code":0,"indent":0,"parameters":[]}],"name":"음성 메모 01","switchId":1,"trigger":0},
 {"id":2,"list":[{"code":0,"indent":0,"parameters":[]}],"name":"","switchId":1,"trigger":0},
 {"id":3,"list":[{"code":0,"indent":0,"parameters":[]}],"name":"","switchId":1,"trigger":0},
-{"id":4,"list":[{"code":0,"indent":0,"parameters":[]}],"name":"","switchId":1,"trigger":0}
+{"id":4,"list":[{"code":0,"indent":0,"parameters":[]}],"name":"","switchId":1,"trigger":0},
+{"id":5,"list":[{"code":0,"indent":0,"parameters":[]}],"name":"","switchId":1,"trigger":0},
+{"id":6,"list":[{"code":0,"indent":0,"parameters":[]}],"name":"","switchId":1,"trigger":0},
+{"id":7,"list":[{"code":0,"indent":0,"parameters":[]}],"name":"","switchId":1,"trigger":0},
+{"id":8,"list":[{"code":0,"indent":0,"parameters":[]}],"name":"","switchId":1,"trigger":0},
+{"id":9,"list":[{"code":0,"indent":0,"parameters":[]}],"name":"","switchId":1,"trigger":0}
 ]

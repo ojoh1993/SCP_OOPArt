@@ -1,5 +1,5 @@
 [
 null,
-{"id":1,"battlerName":"","characterIndex":0,"characterName":"#MainCharFieldMovement-A","classId":1,"equips":[0,0,2,3,0],"faceIndex":7,"faceName":"People3","traits":[],"initialLevel":1,"maxLevel":99,"name":"Wololo","nickname":"","note":"","profile":""},
+{"id":1,"battlerName":"","characterIndex":0,"characterName":"#MainChar-A","classId":1,"equips":[0,0,2,3,0],"faceIndex":7,"faceName":"People3","traits":[],"initialLevel":1,"maxLevel":99,"name":"Wololo","nickname":"","note":"","profile":""},
 {"id":2,"battlerName":"","characterIndex":4,"characterName":"Nature","classId":2,"equips":[0,0,0,0,0],"faceIndex":4,"faceName":"Nature","traits":[],"initialLevel":1,"maxLevel":99,"name":"Oops","nickname":"","note":"","profile":"테스트"}
 ]

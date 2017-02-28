@@ -2330,6 +2330,7 @@ var QuasiABS = {};
     this._onDeath = onDeath ? onDeath[1] : "";
     this._dontErase = /<donterase>/i.test(notes);
     this._team  = this.enemy().meta.team || 2;
+    this._respawnLocationFixed = /<respawnlocationfixed>/i.test(notes);//if it is true, respawn location will be fixed.
   };
 
   Game_Enemy.prototype.clearStates = function() {
@@ -3179,20 +3180,27 @@ var QuasiABS = {};
     var dist = this.moveTiles();
     this._through = false;
    
-    while (true) {
-      var stop;
-      for (var i = 1; i < 5; i++) {
-        var dir = i * 2;
-        var x2 = $gameMap.roundPXWithDirection(x, dir, dist);
-        var y2 = $gameMap.roundPYWithDirection(y, dir, dist);
-        if (this.canPixelPass(x2, y2, 5)) {
-          stop = true;
-          break;
-        }
-      }
-      if (stop) break;
-      dist += this.moveTiles();
+    if (this.battler()._respawnLocationFixed===true){
+      var x2=x;
+      var y2=y;    
     }
+    else {
+      while (true) {
+        var stop;
+        for (var i = 1; i < 5; i++) {
+          var dir = i * 2;
+          var x2 = $gameMap.roundPXWithDirection(x, dir, dist);
+          var y2 = $gameMap.roundPYWithDirection(y, dir, dist);
+          if (this.canPixelPass(x2, y2, 5)) {
+            stop = true;
+            break;
+          }
+        }
+        if (stop) break;
+        dist += this.moveTiles();
+      }
+    }
+
     this.setPixelPosition(x2, y2);
     this.straighten();
     this.refreshBushDepth();

@@ -480,6 +480,8 @@ var QuasiABS = {};
         this._skillSettings[skill.id].selecttarget = !settings.groundtarget && settings.selecttarget;
         this._skillSettings[skill.id].range = range || 0;
         this._skillSettings[skill.id].passabilityLevel = settings.passabilityLevel || 0;
+        //OZ 2017.03.01
+        this._skillSettings[skill.id].requireditem = settings.requireditem || 0;
       }
     }
     return this._skillSettings[skill.id];
@@ -817,6 +819,7 @@ var QuasiABS = {};
     return $gameMap.getCharactersAt(item.collider, function(chara) {
       if (!chara.battler()) return true;
       if (chara.battler().isDeathStateAffected()) return true;
+      if (item.hasOwnProperty("ondmg") && item.ondmg.contains("inflicts all")) return false;
       if ([1, 2, 3, 4, 5, 6].contains(item.data.scope)) {
         return chara === self || chara.isFriendly(self);
       }
@@ -2570,6 +2573,13 @@ var QuasiABS = {};
   Game_CharacterBase.prototype.useSkill = function(skillId) {
     if (!this.canInputSkill()) return;
     if (!this.canUseSkill(skillId)) return;
+    //OZ 2016.03.01 - some skill consumes item
+    if (QuasiABS._skillSettings[skillId].requireditem){
+      requied_item = QuasiABS._skillSettings[skillId].requireditem
+      if($gameParty.itemContainer($dataItems[requied_item])[requied_item]>0)
+        $gameParty.itemContainer($dataItems[requied_item])[requied_item]--;
+      else return;      
+    } 
     if (this._groundtargeting) {
       QuasiABS.Manager.removePicture(this._groundtargeting.picture);
       this._groundtargeting = null;
@@ -2899,7 +2909,8 @@ var QuasiABS = {};
       if (!absKeys.hasOwnProperty(key)) continue;
       if (!absKeys[key]) continue;
       var input = absKeys[key].input;
-      if (Input.isTriggered(input)) {
+      //OZ isTriggred -> isPressed 17.02.28
+      if (Input.isPressed(input)) {
         this.useSkill(absKeys[key].skillId);
       }
       if (input === "mouse1" && TouchInput.isTriggered() && this.canClick()) {

@@ -2575,9 +2575,9 @@ var QuasiABS = {};
     if (!this.canUseSkill(skillId)) return;
     //OZ 2016.03.01 - some skill consumes item
     if (QuasiABS._skillSettings[skillId].requireditem){
-      requied_item = QuasiABS._skillSettings[skillId].requireditem
-      if($gameParty.itemContainer($dataItems[requied_item])[requied_item]>0)
-        $gameParty.itemContainer($dataItems[requied_item])[requied_item]--;
+      required_item = QuasiABS._skillSettings[skillId].requireditem
+      if($gameParty.itemContainer($dataItems[required_item])[required_item]>0)
+        $gameParty.itemContainer($dataItems[required_item])[required_item]--;
       else return;      
     } 
     if (this._groundtargeting) {
@@ -2606,6 +2606,8 @@ var QuasiABS = {};
     // This function only runs from .useSkill() not .forceSkill()
     if (!this._groundtargeting) {
       this.battler().paySkillCost($dataSkills[skillId]);
+      //OZ 2017.03.01
+      $gameHud.refresh();
     }
   };
 

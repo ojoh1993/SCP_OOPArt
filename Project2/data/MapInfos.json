@@ -25,5 +25,5 @@ null,
 {"id":23,"expanded":false,"name":"Garden_5th_Floor","order":24,"parentId":20,"scrollX":1318.6666666666667,"scrollY":1130},
 {"id":24,"expanded":true,"name":"Stair_1","order":23,"parentId":22,"scrollX":1638,"scrollY":923},
 null,
-{"id":26,"expanded":false,"name":"Boss","order":11,"parentId":11,"scrollX":1786.909090909091,"scrollY":990.5454545454546}
+{"id":26,"expanded":false,"name":"Boss","order":11,"parentId":11,"scrollX":1618,"scrollY":990}
 ]

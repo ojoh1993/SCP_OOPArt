@@ -1775,6 +1775,10 @@ var QuasiABS = {};
         chara.disableEnemy();
         return;
       }
+      if (chara !== $gamePlayer && args[1].toLowerCase() === "enable") {
+        chara.enableEnemy();
+        return;
+      }
     }
     Alias_Game_Interpreter_pluginCommand.call(this, command, args);
   };
@@ -3019,7 +3023,7 @@ var QuasiABS = {};
       this._battler._charaId = this.eventId();
       this._actions = this._battler.enemy().actions;
       this._skillList = [];
-      this._aiRange = this._battler.aiRange || QuasiABS.aiLength;
+      this._aiRange = this._battler._aiRange || QuasiABS.aiLength;
       this._aiWait1 = 0; // wait for action
       if (QuasiABS.aiSight && !this._battler._noai) {
         this.setupAISight();

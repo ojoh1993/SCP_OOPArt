@@ -1231,6 +1231,9 @@ Yanfly.Core.Game_Character_processMoveCommand =
 Game_Character.prototype.processMoveCommand = function(command) {
   var gc = Game_Character;
   var params = command.parameters;
+  
+  return Yanfly.Core.Game_Character_processMoveCommand.call(this, command);
+/*OZ -> 일단 QuasiMovement에서 처리하는 걸로....
   switch (command.code) {
   case gc.ROUTE_SCRIPT:
     try {
@@ -1241,7 +1244,8 @@ Game_Character.prototype.processMoveCommand = function(command) {
     return;
     break;
   }
-  return Yanfly.Core.Game_Character_processMoveCommand.call(this, command);
+  return Yanfly.Core.Game_Character_processMoveCommand.call(this, command);*/
+
 };
 
 //=============================================================================

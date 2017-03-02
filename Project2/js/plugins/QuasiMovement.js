@@ -2263,9 +2263,11 @@ var QuasiMovement = {};
     if (this._smartMoveSpeed) this.smartMoveSpeed(d);
     this._radian = this.directionToRadian(d);
     if (this.isMovementSucceeded()) {
-      if (this.hasOwnProperty('_battler')&&this._battler._locationFixed) {
-        this.setDirection(d);
-        this.checkEventTriggerTouchFront(d);
+      if (this.hasOwnProperty('_battler')
+        && this._battler 
+        && this._battler._locationFixed){
+          this.setDirection(d);
+          this.checkEventTriggerTouchFront(d);
       } else {
         this._diagonal = false;
         this.setDirection(d);

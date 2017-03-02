@@ -1230,7 +1230,7 @@ Yanfly.Core.Game_Character_processMoveCommand =
   Game_Character.prototype.processMoveCommand;
 Game_Character.prototype.processMoveCommand = function(command) {
   var gc = Game_Character;
-  var params = command.parameters;
+  var params = command.parameters;/*
   switch (command.code) {
   case gc.ROUTE_SCRIPT:
     try {
@@ -1241,7 +1241,7 @@ Game_Character.prototype.processMoveCommand = function(command) {
     return;
     break;
   }
-  return Yanfly.Core.Game_Character_processMoveCommand.call(this, command);
+  return Yanfly.Core.Game_Character_processMoveCommand.call(this, command);*/
 };
 
 //=============================================================================

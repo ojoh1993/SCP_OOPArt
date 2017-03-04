@@ -315,6 +315,7 @@ function Sprite_BossGauge() {
 
   Sprite_Gauge.prototype.refresh = function() {
     this._clear();
+    if (!$gameSystem._absEnabled) return;
     if (!this._battler) return;
     if (!this.showGauge()) return;
     this.drawGauge();
@@ -376,6 +377,7 @@ function Sprite_BossGauge() {
   };
 
   Sprite_Gauge.prototype.showHud = function() {
+    if (!$gameSystem._absEnabled) return;
     if (this._hidden) {
       this.refresh();
       this._hidden = false;

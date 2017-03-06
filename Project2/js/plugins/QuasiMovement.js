@@ -2067,7 +2067,12 @@ var QuasiMovement = {};
 
   Game_CharacterBase.prototype.update = function() {
     var prevX = this._realPX;
-    var prevY = this._realPY;
+    var prevY = this._realPY;  
+    if (this.hasOwnProperty('_battler')
+        && this._battler 
+        && this._battler._locationFixed){
+      return;
+    } 
     if (this.collider().constructor === Object) {
       this.reloadBoxes();
     }
@@ -2097,6 +2102,8 @@ var QuasiMovement = {};
   };
 
   Game_CharacterBase.prototype.updateArc = function() {
+
+
     if (this._locked) return;
     if (this._currentRad < this._targetRad) {
       var newRad = Math.min(this._currentRad + this.angularSpeed(), this._targetRad);
@@ -2116,6 +2123,7 @@ var QuasiMovement = {};
   };
 
   Game_CharacterBase.prototype.updateMove = function() {
+
     if (this._px < this._realPX) {
       this._realPX = Math.max(this._realPX - this.frameSpeed(this.radianCos()), this._px);
     }
@@ -2262,24 +2270,17 @@ var QuasiMovement = {};
     var originalSpeed = this._moveSpeed;
     if (this._smartMoveSpeed) this.smartMoveSpeed(d);
     this._radian = this.directionToRadian(d);
-    if (this.isMovementSucceeded()) {
-      if (this.hasOwnProperty('_battler')
-        && this._battler 
-        && this._battler._locationFixed){
-          this.setDirection(d);
-          this.checkEventTriggerTouchFront(d);
-      } else {
-        this._diagonal = false;
-        this.setDirection(d);
-        this._px = $gameMap.roundPXWithDirection(this._px, d, this.moveTiles());
-        this._py = $gameMap.roundPYWithDirection(this._py, d, this.moveTiles());
-        this._realPX = $gameMap.pxWithDirection(this._px, this.reverseDir(d), this.moveTiles());
-        this._realPY = $gameMap.pyWithDirection(this._py, this.reverseDir(d), this.moveTiles());
-        this._moveCount++;
-        this.increaseSteps();
-        if (this.constructor === Game_Player) {
-          this._followers.addMove(this._px, this._py, this.realMoveSpeed(), d);
-        }
+    if (this.isMovementSucceeded()) {      
+      this._diagonal = false;
+      this.setDirection(d);
+      this._px = $gameMap.roundPXWithDirection(this._px, d, this.moveTiles());
+      this._py = $gameMap.roundPYWithDirection(this._py, d, this.moveTiles());
+      this._realPX = $gameMap.pxWithDirection(this._px, this.reverseDir(d), this.moveTiles());
+      this._realPY = $gameMap.pyWithDirection(this._py, this.reverseDir(d), this.moveTiles());
+      this._moveCount++;
+      this.increaseSteps();
+      if (this.constructor === Game_Player) {
+        this._followers.addMove(this._px, this._py, this.realMoveSpeed(), d);
       }
     } else {
       this.setDirection(d);

@@ -480,8 +480,9 @@ var QuasiABS = {};
         this._skillSettings[skill.id].selecttarget = !settings.groundtarget && settings.selecttarget;
         this._skillSettings[skill.id].range = range || 0;
         this._skillSettings[skill.id].passabilityLevel = settings.passabilityLevel || 0;
-        //OZ 2017.03.01
+        //OZ 2017.03.07
         this._skillSettings[skill.id].requireditem = settings.requireditem || 0;
+        this._skillSettings[skill.id].requireditemamount = settings.requireditemamount || 1;
       }
     }
     return this._skillSettings[skill.id];
@@ -2580,8 +2581,9 @@ var QuasiABS = {};
     //OZ 2016.03.01 - some skill consumes item
     if (QuasiABS._skillSettings[skillId].requireditem){
       required_item = QuasiABS._skillSettings[skillId].requireditem
-      if($gameParty.itemContainer($dataItems[required_item])[required_item]>0)
-        $gameParty.itemContainer($dataItems[required_item])[required_item]--;
+      required_item_amount = QuasiABS._skillSettings[skillId].requireditemamount;
+      if($gameParty.itemContainer($dataItems[required_item])[required_item]-required_item_amount>0)
+        $gameParty.itemContainer($dataItems[required_item])[required_item]-required_item_amount;
       else return;      
     } 
     if (this._groundtargeting) {
@@ -2611,7 +2613,7 @@ var QuasiABS = {};
     if (!this._groundtargeting) {
       this.battler().paySkillCost($dataSkills[skillId]);
       //OZ 2017.03.01
-      $gameHud.refresh();
+      $gameTemp.notifyHudTextRefresh();
     }
   };
 

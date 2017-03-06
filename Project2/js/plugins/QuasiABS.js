@@ -3032,9 +3032,6 @@ var QuasiABS = {};
       this._noPopup = this._battler._noPopup;
       this._dontErase = this._battler._dontErase;
       this._team = this._battler._team;
-      //OZ
-      if(this._battler._locationFixed)
-        this._locked=true;
     }
   };
 

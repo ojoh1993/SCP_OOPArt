@@ -1,5 +1,6 @@
 [
 null,
 {"id":1,"battlerName":"","characterIndex":0,"characterName":"#MainChar-A","classId":1,"equips":[4,0,2,3,0],"faceIndex":7,"faceName":"People3","traits":[],"initialLevel":1,"maxLevel":1,"name":"Wololo","nickname":"","note":"","profile":""},
-{"id":2,"battlerName":"","characterIndex":4,"characterName":"Nature","classId":2,"equips":[0,0,0,0,0],"faceIndex":4,"faceName":"Nature","traits":[],"initialLevel":1,"maxLevel":99,"name":"Oops","nickname":"","note":"","profile":"테스트"}
+{"id":2,"battlerName":"","characterIndex":4,"characterName":"Nature","classId":1,"equips":[0,0,0,0,0],"faceIndex":4,"faceName":"Nature","traits":[],"initialLevel":1,"maxLevel":99,"name":"Oops","nickname":"","note":"","profile":"테스트"},
+{"id":3,"battlerName":"","characterIndex":0,"characterName":"","classId":1,"equips":[0,0,0,0,0],"faceIndex":4,"faceName":"People2","traits":[],"initialLevel":1,"maxLevel":99,"name":"ㅇㅇㅇ","nickname":"","note":"","profile":""}
 ]

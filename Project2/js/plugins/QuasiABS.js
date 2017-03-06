@@ -1547,7 +1547,7 @@ var QuasiABS = {};
     var y = this._skill.collider.center.y;
     this._skill.trail.startX = x;
     this._skill.trail.startY = y;
-    var skill = this._skill;
+    var skill = this._skill;/*
     this._skill.trail.bitmap.addLoadListener(function() {
       var w = skill.trail.bitmap.width;
       var h = skill.trail.bitmap.height;
@@ -1555,7 +1555,13 @@ var QuasiABS = {};
       skill.trail.anchor.y = 0.5;
       skill.trail.move(x, y, w, h);
       QuasiABS.Manager.addPicture(skill.trail);
-    });
+    });*/
+      var w = skill.trail.bitmap.width;
+      var h = skill.trail.bitmap.height;
+      skill.trail.anchor.x = 0.5;
+      skill.trail.anchor.y = 0.5;
+      skill.trail.move(x, y, w, h);
+      QuasiABS.Manager.addPicture(skill.trail);
   };
 
   Skill_Sequencer.prototype.setCollider = function(action) {

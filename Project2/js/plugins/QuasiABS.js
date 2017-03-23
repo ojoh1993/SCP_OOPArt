@@ -2338,7 +2338,7 @@ var QuasiABS = {};
     var notes = this.enemy().note;
     this._noai = /<noai>/i.test(notes);
     this._locationFixed = /<locationFixed>/i.test(notes);
-    this._aiRange = this.enemy().meta.range;
+    this._aiRange = Number(this.enemy().meta.range);
     this._noPopup = /<nopopup>/i.test(notes);
     var onDeath = /<ondeath>([\s\S]*)<\/ondeath>/i.exec(notes);
     this._onDeath = onDeath ? onDeath[1] : "";
@@ -3049,7 +3049,7 @@ var QuasiABS = {};
 
   Game_Event.prototype.setupAISight = function() {
     this._sightSettings = {};
-    this._sightSettings.length = this._aiRange;
+    this._sightSettings.length = Number(this._aiRange);
     this._sightSettings.target = $gamePlayer;
     this._sightSettings.switch = [this._mapId, this._eventId, "E"];
     this._sightSettings.shape  = "circle";

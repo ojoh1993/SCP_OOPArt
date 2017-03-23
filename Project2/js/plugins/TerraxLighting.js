@@ -256,6 +256,8 @@ Imported.TerraxLighting = true;
 	var averagetime = [];
 	var averagetimecount = 0;
 
+	var lightning_list=[];
+
     var _Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function(command, args) {
         _Game_Interpreter_pluginCommand.call(this, command, args);
@@ -987,10 +989,20 @@ Imported.TerraxLighting = true;
 				lightarray_state = [];
 				$gameVariables.SetLightArrayId(lightarray_id);
 				$gameVariables.SetLightArrayState(lightarray_state);
+			
 			}
 
-
-
+			lightning_list=[];
+			for (var i = 0; i < $gameMap.events().length; i++) {
+				if ($gameMap.events()[i]) {
+					var note = $gameMap.events()[i].event().note;
+					var note_args = note.split(" ");
+					var note_command = note_args.shift().toLowerCase();
+					if (note_command == "light" || note_command == "fire" || note_command == "daynight" || note_command == "flashlight") {
+						lightning_list.push(i);
+					}
+				}
+			}
 		}
 
 
@@ -1093,19 +1105,14 @@ Imported.TerraxLighting = true;
 						this._addSprite(-20, 0, this._maskBitmap); // daynight tag? yes.. then turn off the lights
 						darkenscreen = true;
 					} else {
-						for (var i = 0; i < $gameMap.events().length; i++) {
-							if ($gameMap.events()[i]) {
-								var note = $gameMap.events()[i].event().note;
-								var note_args = note.split(" ");
-								var note_command = note_args.shift().toLowerCase();
-								if (note_command == "light" || note_command == "fire" || note_command == "daynight" || note_command == "flashlight") {
+						for (var i = 0; i < lightning_list.length; i++) {
 									this._addSprite(-20, 0, this._maskBitmap); // light event? yes.. then turn off the lights
 									darkenscreen = true;
 									break;
-								}
+								
 							}
 						}
-					}
+					
 
 
 					if (darkenscreen == true) {
@@ -1630,7 +1637,8 @@ Imported.TerraxLighting = true;
 						// ********** OTHER LIGHTSOURCES **************
 
 						var daynightset = false;
-						for (var i = 0; i < $gameMap.events().length; i++) {
+						for (var k = 0; k < lightning_list.length; k++) {
+							var i = lightning_list[j];
 							if ($gameMap.events()[i]) {
 								var note = $gameMap.events()[i].event().note;
 								var evid = $gameMap.events()[i]._eventId;
@@ -1890,9 +1898,9 @@ Imported.TerraxLighting = true;
 										}
 									}
 								}
-
-
-								// *********************************** DAY NIGHT CYCLE FILTER **************************
+							}
+						}
+						// *********************************** DAY NIGHT CYCLE FILTER **************************
 								if (daynightset == false) {
 									var mapnote = $dataMap.note.toLowerCase()
 									var searchnote = mapnote.search("daynight")
@@ -1901,9 +1909,6 @@ Imported.TerraxLighting = true;
 										//$gameVariables.setDayNightColorArray(daynightcolors);
 									}
 								}
-							}
-						}
-
 						// *************************** TILE TAG *********************
 
 						var tilearray = $gameVariables.GetTileArray();

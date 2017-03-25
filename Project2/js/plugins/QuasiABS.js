@@ -1480,6 +1480,8 @@ var QuasiABS = {};
     SceneManager._scene.addTempCollider(this._skill.collider, duration);
     var radian = dir === "forward" ? this._skill.radian : dir;
     radian = radian === "backward" ? this.reverseRadian(this._skill.radian) : radian;
+    if(this._character instanceof Game_Event)
+    radian = radian === "towardcharacter" ? this._character.radianTowardsPlayer() : radian;
     this.setSkillRadian(Number(radian));
     this.moveSkill(distance, duration);
     this._waitForMove = wait;
@@ -2585,7 +2587,8 @@ var QuasiABS = {};
     if (!this.canInputSkill()) return;
     if (!this.canUseSkill(skillId)) return;
     //OZ 2016.03.01 - some skill consumes item
-    if (QuasiABS._skillSettings[skillId].requireditem){
+    if (QuasiABS._skillSettings[skillId] && 
+      QuasiABS._skillSettings[skillId].requireditem){
       required_item = QuasiABS._skillSettings[skillId].requireditem
       required_item_amount = QuasiABS._skillSettings[skillId].requireditemamount;
       if($gameParty.itemContainer($dataItems[required_item])[required_item]-required_item_amount>0)
@@ -2635,7 +2638,7 @@ var QuasiABS = {};
     skill.collider  = this.makeSkillCollider(skill.settings);
     skill.sequencer = new Skill_Sequencer(this, skill);
     skill.userDirection = this._direction;
-    skill.radian = this._radian || this.directionToRadian(this._direction);
+    skill.radian = this.directionToRadian(this._direction) || this._radian; 
     this._radian = null;
     skill.direction = this._direction;
     skill.targetsHit = [];
@@ -3086,6 +3089,7 @@ var QuasiABS = {};
     var y2 = this.cy();
     this._radian = Math.atan2(-(y1 - y2), x1 - x2);
     this._radian += this._radian < 0 ? 2 * Math.PI : 0;
+    return this._radian;
   };
 
   Game_Event.prototype.updateABS = function() {
@@ -3205,7 +3209,8 @@ var QuasiABS = {};
     var dist = this.moveTiles();
     this._through = false;
    
-    if (this.battler()._respawnLocationFixed===true){
+    if (this.battler()&&
+        this.battler()._respawnLocationFixed===true){
       var x2=x;
       var y2=y;    
     }

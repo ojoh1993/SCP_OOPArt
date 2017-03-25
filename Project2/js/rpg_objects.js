@@ -8738,6 +8738,7 @@ Game_Event.prototype.updateParallel = function() {
         if (!this._interpreter.isRunning()) {
             this._interpreter.setup(this.list(), this._eventId);
         }
+        this._interpreter._character=this;
         this._interpreter.update();
     }
 };

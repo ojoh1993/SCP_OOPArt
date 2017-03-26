@@ -2027,13 +2027,17 @@ var QuasiABS = {};
 
   Game_System.prototype.absKeys = function() {
     var obj = {};
+    obj.length=0;
     for (var key in this._absKeys) {
       if (!this._absKeys.hasOwnProperty(key)) continue;
+      if(obj[key]===undefined) obj.length++;
       obj[key] = this._absKeys[key];
     }
     for (var key in this._absWeaponKeys) {
       if (!this._absWeaponKeys.hasOwnProperty(key)) continue;
+      if(obj[key]===undefined) obj.length++;
       obj[key] = this._absWeaponKeys[key];
+      
     }
     return obj;
   };
@@ -2591,8 +2595,8 @@ var QuasiABS = {};
       QuasiABS._skillSettings[skillId].requireditem){
       required_item = QuasiABS._skillSettings[skillId].requireditem
       required_item_amount = QuasiABS._skillSettings[skillId].requireditemamount;
-      if($gameParty.itemContainer($dataItems[required_item])[required_item]-required_item_amount>0)
-        $gameParty.itemContainer($dataItems[required_item])[required_item]-required_item_amount;
+      if($gameParty.itemContainer($dataItems[required_item])[required_item]-required_item_amount>=0)
+        $gameParty.gainItem($dataItems[required_item],-required_item_amount);
       else return;      
     } 
     if (this._groundtargeting) {

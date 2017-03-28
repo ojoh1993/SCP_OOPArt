@@ -434,6 +434,8 @@ var QuasiABS = {};
     this.expAsNoti   = parameters["Show Exp Gain as Notifications"] === "true";
     this.showLevel   = parameters["Show Level Gain Popups"] === "true";
     this.levelAsNoti = parameters["Show Level Gain as Notifications"] === "true";
+    //OZ 17.03.28 - for maintaining main weapon key number
+    this._main_weapon_key = 1;
   };
   QuasiABS.proccessParameters();
 
@@ -543,7 +545,7 @@ var QuasiABS = {};
       var skills = /<absSkills>([\s\S]*)<\/absSkills>/i.exec(note);
       this._weaponSkills[id] = {};
       if (skills) {
-        this._weaponSkills[id] = QuasiABS.stringToSkillKeyObj(skills[1]);
+        this._weaponSkills[id] = eval(QuasiABS.stringToSkillKeyObj(skills[1]));
       }
     }
     return this._weaponSkills[id];
@@ -2592,7 +2594,7 @@ var QuasiABS = {};
       QuasiABS._skillSettings[skillId].requireditem){
       required_item = QuasiABS._skillSettings[skillId].requireditem
       required_item_amount = QuasiABS._skillSettings[skillId].requireditemamount;
-      if($gameParty._items[$dataItems[required_item]]-required_item_amount>=0)
+      if($gameParty._items[required_item]-required_item_amount>=0)
         $gameParty.gainItem($dataItems[required_item],-required_item_amount);
       else return;      
     } 

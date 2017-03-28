@@ -256,7 +256,7 @@ Imported.TerraxLighting = true;
 	var averagetime = [];
 	var averagetimecount = 0;
 
-	var lightning_list=[];
+	var light_source_list=[];
 
     var _Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function(command, args) {
@@ -992,14 +992,14 @@ Imported.TerraxLighting = true;
 			
 			}
 
-			lightning_list=[];
+			light_source_list=[];
 			for (var i = 0; i < $gameMap.events().length; i++) {
 				if ($gameMap.events()[i]) {
 					var note = $gameMap.events()[i].event().note;
 					var note_args = note.split(" ");
 					var note_command = note_args.shift().toLowerCase();
 					if (note_command == "light" || note_command == "fire" || note_command == "daynight" || note_command == "flashlight") {
-						lightning_list.push(i);
+						light_source_list.push(i);
 					}
 				}
 			}
@@ -1105,7 +1105,7 @@ Imported.TerraxLighting = true;
 						this._addSprite(-20, 0, this._maskBitmap); // daynight tag? yes.. then turn off the lights
 						darkenscreen = true;
 					} else {
-						for (var i = 0; i < lightning_list.length; i++) {
+						for (var i = 0; i < light_source_list.length; i++) {
 									this._addSprite(-20, 0, this._maskBitmap); // light event? yes.. then turn off the lights
 									darkenscreen = true;
 									break;
@@ -1637,8 +1637,8 @@ Imported.TerraxLighting = true;
 						// ********** OTHER LIGHTSOURCES **************
 
 						var daynightset = false;
-						for (var k = 0; k < lightning_list.length; k++) {
-							var i = lightning_list[j];
+						for (var k = 0; k < light_source_list.length; k++) {
+							var i = light_source_list[k];
 							if ($gameMap.events()[i]) {
 								var note = $gameMap.events()[i].event().note;
 								var evid = $gameMap.events()[i]._eventId;

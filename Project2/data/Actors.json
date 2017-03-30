@@ -1,6 +1,6 @@
 [
 null,
-{"id":1,"battlerName":"","characterIndex":0,"characterName":"#MainChar-A","classId":1,"equips":[3,0,2,3,0],"faceIndex":7,"faceName":"People3","traits":[],"initialLevel":1,"maxLevel":1,"name":"주인공","nickname":"","note":"","profile":""},
+{"id":1,"battlerName":"","characterIndex":0,"characterName":"#MainChar-A","classId":1,"equips":[0,0,2,3,0],"faceIndex":7,"faceName":"People3","traits":[],"initialLevel":1,"maxLevel":1,"name":"주인공","nickname":"","note":"","profile":""},
 {"id":2,"battlerName":"","characterIndex":4,"characterName":"Nature","classId":1,"equips":[0,0,0,0,0],"faceIndex":4,"faceName":"Nature","traits":[],"initialLevel":1,"maxLevel":99,"name":"쫄랑이","nickname":"","note":"","profile":"테스트"},
 {"id":3,"battlerName":"","characterIndex":4,"characterName":"People2","classId":1,"equips":[0,0,0,0,0],"faceIndex":4,"faceName":"People2","traits":[],"initialLevel":1,"maxLevel":99,"name":"헤헤","nickname":"","note":"","profile":""}
 ]

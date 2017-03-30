@@ -434,8 +434,6 @@ var QuasiABS = {};
     this.expAsNoti   = parameters["Show Exp Gain as Notifications"] === "true";
     this.showLevel   = parameters["Show Level Gain Popups"] === "true";
     this.levelAsNoti = parameters["Show Level Gain as Notifications"] === "true";
-    //OZ 17.03.28 - for maintaining main weapon key number
-    this._main_weapon_key = 1;
   };
   QuasiABS.proccessParameters();
 
@@ -545,7 +543,7 @@ var QuasiABS = {};
       var skills = /<absSkills>([\s\S]*)<\/absSkills>/i.exec(note);
       this._weaponSkills[id] = {};
       if (skills) {
-        this._weaponSkills[id] = eval(QuasiABS.stringToSkillKeyObj(skills[1]));
+        this._weaponSkills[id] = QuasiABS.stringToSkillKeyObj(skills[1]);
       }
     }
     return this._weaponSkills[id];
@@ -2506,6 +2504,22 @@ var QuasiABS = {};
   Game_CharacterBase.prototype.updateABS = function() {
     if (this.battler())  {
       if (this.battler().hp <= 0) return this.onDeath();
+      //OZ 16.03.29 for enemy's stun
+      if (this.battler().isSubstitute()) {
+        if (this.battler()._OZ_substitute_check===undefined) {
+          this.battler()._OZ_substitute_check=0;  
+        } else if (this.battler()._OZ_substitute_check==400) {
+          this.battler()._OZ_substitute_check=0;
+          this.battler()._states.splice(this.battler()._states.indexOf(12),1);
+        } else if(this.battler()._OZ_substitute_check<400){
+          if (this.battler()._OZ_substitute_check===0){
+            var x = this.cx();
+            var y = this.cy();
+            QuasiABS.Manager.startAnimation(132, x, y);
+          } this.battler()._OZ_substitute_check++;
+        } 
+        return; 
+      }
       this.updateSkills();
       this.battler().updateABS();
     }
@@ -2542,6 +2556,15 @@ var QuasiABS = {};
     QuasiABS.Manager.removePicture(this._groundtargeting.picture);
     this._groundtargeting = null;
     this._selecttargeting = null;
+    //OZ 2016.03.01 - some skill consumes item
+    if (QuasiABS._skillSettings[skill.data.id] && 
+      QuasiABS._skillSettings[skill.data.id].requireditem){
+      required_item = QuasiABS._skillSettings[skill.data.id].requireditem
+      required_item_amount = QuasiABS._skillSettings[skill.data.id].requireditemamount;
+      if($gameParty._items[required_item]-required_item_amount>=0)
+        $gameParty.gainItem($dataItems[required_item],-required_item_amount);
+      else return;      
+    } 
   };
 
   Game_CharacterBase.prototype.updateSkillSequence = function() {
@@ -2589,15 +2612,6 @@ var QuasiABS = {};
   Game_CharacterBase.prototype.useSkill = function(skillId) {
     if (!this.canInputSkill()) return;
     if (!this.canUseSkill(skillId)) return;
-    //OZ 2016.03.01 - some skill consumes item
-    if (QuasiABS._skillSettings[skillId] && 
-      QuasiABS._skillSettings[skillId].requireditem){
-      required_item = QuasiABS._skillSettings[skillId].requireditem
-      required_item_amount = QuasiABS._skillSettings[skillId].requireditemamount;
-      if($gameParty._items[required_item]-required_item_amount>=0)
-        $gameParty.gainItem($dataItems[required_item],-required_item_amount);
-      else return;      
-    } 
     if (this._groundtargeting) {
       QuasiABS.Manager.removePicture(this._groundtargeting.picture);
       this._groundtargeting = null;
@@ -2626,6 +2640,15 @@ var QuasiABS = {};
       this.battler().paySkillCost($dataSkills[skillId]);
       //OZ 2017.03.01
       $gameTemp.notifyHudTextRefresh();
+      //OZ 2016.03.01 - some skill consumes item
+    if (QuasiABS._skillSettings[skillId] && 
+      QuasiABS._skillSettings[skillId].requireditem){
+      required_item = QuasiABS._skillSettings[skillId].requireditem
+      required_item_amount = QuasiABS._skillSettings[skillId].requireditemamount;
+      if($gameParty._items[required_item]-required_item_amount>=0)
+        $gameParty.gainItem($dataItems[required_item],-required_item_amount);
+      else return;      
+    } 
     }
   };
 

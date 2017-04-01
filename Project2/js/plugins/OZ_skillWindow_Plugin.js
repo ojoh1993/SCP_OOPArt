@@ -47,6 +47,22 @@ Game_Message.prototype.isBusy = function(){
     //OZ 17.03.28 added -> || this.isSkillChoice()
 }
 
+
+// Select Item
+Game_Interpreter.prototype.command106 = function() {
+    if (!$gameMessage.isBusy()) {
+        this.setupSkillChoice(this._params);
+        this._index++;
+        this.setWaitMode('message');
+    }
+    return false;
+};
+
+Game_Interpreter.prototype.setupSkillChoice = function(params) {
+    $gameMessage.setSkillChoice(params[0], params[1] || 1);
+};
+
+
 ///rpg_objects.js
 
 

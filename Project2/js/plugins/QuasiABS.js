@@ -2504,18 +2504,21 @@ var QuasiABS = {};
   Game_CharacterBase.prototype.updateABS = function() {
     if (this.battler())  {
       if (this.battler().hp <= 0) return this.onDeath();
-      //OZ 16.03.29 for enemy's stun
+       //OZ 16.03.29 for enemy's stun
       if (this.battler().isSubstitute()) {
         if (this.battler()._OZ_substitute_check===undefined) {
           this.battler()._OZ_substitute_check=0;  
         } else if (this.battler()._OZ_substitute_check==400) {
           this.battler()._OZ_substitute_check=0;
           this.battler()._states.splice(this.battler()._states.indexOf(12),1);
+          this._moveType=this.battler()._OZ_substitute_check_moveType;
         } else if(this.battler()._OZ_substitute_check<400){
           if (this.battler()._OZ_substitute_check===0){
             var x = this.cx();
             var y = this.cy();
             QuasiABS.Manager.startAnimation(132, x, y);
+            this.battler()._OZ_substitute_check_moveType=this._moveType;
+            this._moveType=0;
           } 
           this.battler()._OZ_substitute_check++;
         } 

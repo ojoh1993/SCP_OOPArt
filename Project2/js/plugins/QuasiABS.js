@@ -2516,7 +2516,8 @@ var QuasiABS = {};
             var x = this.cx();
             var y = this.cy();
             QuasiABS.Manager.startAnimation(132, x, y);
-          } this.battler()._OZ_substitute_check++;
+          } 
+          this.battler()._OZ_substitute_check++;
         } 
         return; 
       }

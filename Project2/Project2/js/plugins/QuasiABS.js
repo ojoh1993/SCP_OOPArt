@@ -1246,9 +1246,6 @@ var QuasiABS = {};
   Skill_Sequencer.prototype.targetMove = function(action, targets) {
     var dist = Number(action[3]) || this._character.moveTiles();
     for (var i = 0; i < targets.length; i++) {
-      if(targets[i].hasOwnProperty("_battler")
-        && targets[i]._battler._locationFixed)
-        continue;
       dist -= dist * eval("targets[i].battler()." + QuasiABS.mrst);
       if (dist <= 0) return;
       var dx = targets[i]._px - this._character._px;
@@ -1293,9 +1290,6 @@ var QuasiABS = {};
   Skill_Sequencer.prototype.targetJump = function(action, targets) {
     var dist = Number(action[3]);
     for (var i = 0; i < targets.length; i++) {
-      if(targets[i].hasOwnProperty("_battler")
-        && targets[i]._battler._locationFixed)
-        continue;
       dist -= dist * eval("targets[i].battler()." + QuasiABS.mrst);
       if (dist <= 0) return;
       var dx = targets[i]._px - this._character._px;
@@ -2340,7 +2334,6 @@ var QuasiABS = {};
     Alias_Game_Enemy_setup.call(this, enemyId, x, y);
     var notes = this.enemy().note;
     this._noai = /<noai>/i.test(notes);
-    this._locationFixed = /<locationFixed>/i.test(notes);
     this._aiRange = Number(this.enemy().meta.range);
     this._noPopup = /<nopopup>/i.test(notes);
     var onDeath = /<ondeath>([\s\S]*)<\/ondeath>/i.exec(notes);
@@ -2504,19 +2497,23 @@ var QuasiABS = {};
   Game_CharacterBase.prototype.updateABS = function() {
     if (this.battler())  {
       if (this.battler().hp <= 0) return this.onDeath();
-      //OZ 16.03.29 for enemy's stun
+       //OZ 16.03.29 for enemy's stun
       if (this.battler().isSubstitute()) {
         if (this.battler()._OZ_substitute_check===undefined) {
           this.battler()._OZ_substitute_check=0;  
         } else if (this.battler()._OZ_substitute_check==400) {
           this.battler()._OZ_substitute_check=0;
           this.battler()._states.splice(this.battler()._states.indexOf(12),1);
+          this._moveType=this.battler()._OZ_substitute_check_moveType;
         } else if(this.battler()._OZ_substitute_check<400){
           if (this.battler()._OZ_substitute_check===0){
             var x = this.cx();
             var y = this.cy();
             QuasiABS.Manager.startAnimation(132, x, y);
-          } this.battler()._OZ_substitute_check++;
+            this.battler()._OZ_substitute_check_moveType=this._moveType;
+            this._moveType=0;
+          } 
+          this.battler()._OZ_substitute_check++;
         } 
         return; 
       }

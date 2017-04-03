@@ -4958,7 +4958,8 @@ Game_Party.prototype.numItems = function(item) {
 };
 
 Game_Party.prototype.maxItems = function(item) {
-    return 99;
+    //OZ 17.04.04 max 99->999
+    return 999;
 };
 
 Game_Party.prototype.hasMaxItems = function(item) {

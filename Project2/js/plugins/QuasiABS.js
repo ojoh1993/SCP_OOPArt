@@ -2554,14 +2554,11 @@ var QuasiABS = {};
     this._groundtargeting = null;
     this._selecttargeting = null;
     //OZ 2016.03.01 - some skill consumes item
-    if (QuasiABS._skillSettings[skill.data.id] && 
-      QuasiABS._skillSettings[skill.data.id].requireditem){
+    if(this instanceof Game_Player){
       required_item = QuasiABS._skillSettings[skill.data.id].requireditem
       required_item_amount = QuasiABS._skillSettings[skill.data.id].requireditemamount;
-      if($gameParty._items[required_item]-required_item_amount>=0)
-        $gameParty.gainItem($dataItems[required_item],-required_item_amount);
-      else return;      
-    } 
+      $gameParty.gainItem($dataItems[required_item],-required_item_amount);     
+    }
   };
 
   Game_CharacterBase.prototype.updateSkillSequence = function() {
@@ -2598,6 +2595,14 @@ var QuasiABS = {};
 
   Game_CharacterBase.prototype.canUseSkill = function(id) {
     var skill = $dataSkills[id];
+    //OZ 2016.03.01 - some skill consumes item
+    if (QuasiABS._skillSettings[id] && 
+      QuasiABS._skillSettings[id].requireditem){
+      required_item = QuasiABS._skillSettings[id].requireditem
+      required_item_amount = QuasiABS._skillSettings[id].requireditemamount;
+      if(!$gameParty._items[required_item] ||
+         $gameParty._items[required_item]-required_item_amount<0) return false;
+    }
     return this.usableSkills().contains(id) && this.battler().canPaySkillCost(skill);
   };
 
@@ -2638,15 +2643,13 @@ var QuasiABS = {};
       //OZ 2017.03.01
       $gameTemp.notifyHudTextRefresh();
       //OZ 2016.03.01 - some skill consumes item
-    if (QuasiABS._skillSettings[skillId] && 
-      QuasiABS._skillSettings[skillId].requireditem){
-      required_item = QuasiABS._skillSettings[skillId].requireditem
-      required_item_amount = QuasiABS._skillSettings[skillId].requireditemamount;
-      if($gameParty._items[required_item]-required_item_amount>=0)
+      if(this instanceof Game_Player){
+        required_item = QuasiABS._skillSettings[skillId].requireditem
+        required_item_amount = QuasiABS._skillSettings[skillId].requireditemamount;
         $gameParty.gainItem($dataItems[required_item],-required_item_amount);
-      else return;      
+      }
+           
     } 
-    }
   };
 
   // Sets up the skill object and gets it's abs settings
@@ -2863,11 +2866,15 @@ var QuasiABS = {};
   };
 
   Game_Player.prototype.updateSelectTargeting = function() {
-    if (Input.isTriggered("pageup")) {
+    if (Input.isTriggered("pageup")||
+      Input.isTriggered("up")||
+      Input.isTriggered("right")) {
       this._groundtargeting.index++;
       this.updateSkillTarget();
     }
-    if (Input.isTriggered("pagedown")) {
+    if (Input.isTriggered("pagedown")||
+      Input.isTriggered("down")||
+      Input.isTriggered("left")) {
       this._groundtargeting.index--;
       this.updateSkillTarget();
     }

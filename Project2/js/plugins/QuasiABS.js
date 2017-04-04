@@ -476,6 +476,7 @@ var QuasiABS = {};
         this._skillSettings[skill.id].through  = Number(settings.through) || 0;
         if (settings.groundtarget) var range = Number(settings.groundtarget);
         if (settings.selecttarget) var range = Number(settings.selecttarget);
+        if (settings.range) var range = Number(settings.range);
         this._skillSettings[skill.id].groundtarget = settings.groundtarget && !settings.selecttarget;
         this._skillSettings[skill.id].selecttarget = !settings.groundtarget && settings.selecttarget;
         this._skillSettings[skill.id].range = range || 0;
@@ -483,6 +484,13 @@ var QuasiABS = {};
         //OZ 2017.03.07
         this._skillSettings[skill.id].requireditem = settings.requireditem || 0;
         this._skillSettings[skill.id].requireditemamount = settings.requireditemamount || 1;
+        //OZ 2017.04.04
+        var dtc;
+        if (settings.drawtargetcolider===false) dtc=settings.drawtargetcolider;
+        else dtc=true;
+        this._skillSettings[skill.id].drawtargetcolider=dtc;
+
+        this._skillSettings[skill.id].addstatus = settings.addstatus || 0;
       }
     }
     return this._skillSettings[skill.id];
@@ -920,7 +928,8 @@ var QuasiABS = {};
     var range, targets;
     var getTargetObj = {data: skill};
     var aiRange = QuasiABS.getAiRange(skill);
-    if (targetRange !== 0 || (aiRange > 0 && QuasiABS.radianAtks)) {
+    if (targetRange !== 0 || (aiRange > 0 //&& QuasiABS.radianAtks
+      )) {
       var maxRange = targetRange < aiRange * 2 ? aiRange * 2 : targetRange;
       range = new QuasiMovement.Circle_Collider(w + maxRange, h + maxRange);
       range.moveto(x1 - maxRange / 2, y1 - maxRange / 2);
@@ -2381,6 +2390,8 @@ var QuasiABS = {};
     this._inCombat = false;
     this._casting = null;
     this._skillLocked = [];
+    //OZ 17.04.04
+    this._isStun = false;
   };
 
   Game_CharacterBase.prototype.clearSkills = function() {
@@ -2498,24 +2509,18 @@ var QuasiABS = {};
     if (this.battler())  {
       if (this.battler().hp <= 0) return this.onDeath();
        //OZ 16.03.29 for enemy's stun
-      if (this.battler().isSubstitute()) {
-        if (this.battler()._OZ_substitute_check===undefined) {
-          this.battler()._OZ_substitute_check=0;  
-        } else if (this.battler()._OZ_substitute_check==400) {
-          this.battler()._OZ_substitute_check=0;
-          this.battler()._states.splice(this.battler()._states.indexOf(12),1);
-          this._moveType=this.battler()._OZ_substitute_check_moveType;
-        } else if(this.battler()._OZ_substitute_check<400){
-          if (this.battler()._OZ_substitute_check===0){
-            var x = this.cx();
-            var y = this.cy();
-            QuasiABS.Manager.startAnimation(132, x, y);
-            this.battler()._OZ_substitute_check_moveType=this._moveType;
-            this._moveType=0;
-          } 
-          this.battler()._OZ_substitute_check++;
-        } 
-        return; 
+       if (this._isStun){
+        if (!this.battler()._isStunned){
+          this._isStun=false;
+          this._moveType=this._OZ_substitute_check_moveType;
+        }
+       } else if (this.battler()._isStunned) {
+        this._isStun=true;
+        var x = this.cx();
+        var y = this.cy();
+        QuasiABS.Manager.startAnimation(132, x, y);
+        this._OZ_substitute_check_moveType=this._moveType;
+        this._moveType=0;    
       }
       this.updateSkills();
       this.battler().updateABS();
@@ -2638,7 +2643,7 @@ var QuasiABS = {};
   Game_CharacterBase.prototype.afterSkill = function(skillId) {
     // Placeholder method, might need for addons
     // This function only runs from .useSkill() not .forceSkill()
-    if (!this._groundtargeting) {
+    if (!this._groundtargeting && !this._selecttargeting) {
       this.battler().paySkillCost($dataSkills[skillId]);
       //OZ 2017.03.01
       $gameTemp.notifyHudTextRefresh();
@@ -2715,8 +2720,8 @@ var QuasiABS = {};
       var x = $gameMap.canvasToMapPX(TouchInput.x) - skill.collider.width / 2;
       var y = $gameMap.canvasToMapPY(TouchInput.y) - skill.collider.height / 2;
       skill.picture.move(x, y);
-    }
-    QuasiABS.Manager.addPicture(skill.picture);
+    }   
+    if(QuasiABS._skillSettings[skill.data.id].drawtargetcolider) QuasiABS.Manager.addPicture(skill.picture);
   };
 
   /**

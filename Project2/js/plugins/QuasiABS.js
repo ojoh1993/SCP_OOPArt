@@ -481,6 +481,7 @@ var QuasiABS = {};
         this._skillSettings[skill.id].selecttarget = !settings.groundtarget && settings.selecttarget;
         this._skillSettings[skill.id].range = range || 0;
         this._skillSettings[skill.id].passabilityLevel = settings.passabilityLevel || 0;
+        this._skillSettings[skill.id].offset = settings.offset || 0;
         //OZ 2017.03.07
         this._skillSettings[skill.id].requireditem = settings.requireditem || 0;
         this._skillSettings[skill.id].requireditemamount = settings.requireditemamount || 1;
@@ -2516,11 +2517,11 @@ var QuasiABS = {};
         }
        } else if (this.battler()._isStunned) {
         this._isStun=true;
-        var x = this.cx();
-        var y = this.cy();
-        QuasiABS.Manager.startAnimation(132, x, y);
+        //var x = this.cx();
+        //var y = this.cy();
+        //QuasiABS.Manager.startAnimation(132, x, y);
         this._OZ_substitute_check_moveType=this._moveType;
-        this._moveType=0;    
+        this._moveType=0;
       }
       this.updateSkills();
       this.battler().updateABS();
@@ -2670,6 +2671,8 @@ var QuasiABS = {};
     skill.sequencer = new Skill_Sequencer(this, skill);
     skill.userDirection = this._direction;
     skill.radian = this.directionToRadian(this._direction) || this._radian; 
+    if(forced)
+      skill.radian = this._radian;
     this._radian = null;
     skill.direction = this._direction;
     skill.targetsHit = [];
@@ -2800,6 +2803,10 @@ var QuasiABS = {};
     $gameSystem.changeABSWeaponSkills({});
     this.battler().initWeaponSkills();
     this._isDead = false;
+    //OZ 17.04.05
+    this.keyTriggered=false;
+    this._pressed_key=null;
+    
   };
 
   Game_Player.prototype.team = function() {
@@ -2957,23 +2964,34 @@ var QuasiABS = {};
 
   Game_Player.prototype.updateInput = function() {
     var absKeys = $gameSystem.absKeys();
-    for (var key in absKeys) {
-      if (!absKeys.hasOwnProperty(key)) continue;
-      if (!absKeys[key]) continue;
-      var input = absKeys[key].input;
+    if (this.keyTriggered) {
       //OZ isTriggred -> isPressed 17.02.28
-      if (Input.isPressed(input)) {
-        this.useSkill(absKeys[key].skillId);
-      }
-      if (input === "mouse1" && TouchInput.isTriggered() && this.canClick()) {
-        TouchInput._triggered = false;
-        this.useSkill(absKeys[key].skillId);
-      }
-      if (input === "mouse2" && TouchInput.isCancelled() && this.canClick()) {
-        TouchInput._cancelled = false;
-        this.useSkill(absKeys[key].skillId);
+      if (Input.isPressed(absKeys[this._pressed_key].input)) {
+        this.useSkill(absKeys[this._pressed_key].skillId);
+        return;
+      } else {
+        this.keyTriggered=false;
+      } 
+    } else {
+      for (var key in absKeys) {
+        if (!absKeys.hasOwnProperty(key)) continue;
+        if (!absKeys[key]) continue;
+        var input = absKeys[key].input;
+        if (Input.isTriggered(input)){
+          this.keyTriggered=true;
+          this._pressed_key=key;
+        }
+        if (input === "mouse1" && TouchInput.isTriggered() && this.canClick()) {
+          TouchInput._triggered = false;
+          this.useSkill(absKeys[key].skillId);
+        }
+        if (input === "mouse2" && TouchInput.isCancelled() && this.canClick()) {
+          TouchInput._cancelled = false;
+          this.useSkill(absKeys[key].skillId);
+        }
       }
     }
+
   };
 
   // Only runs when this.useSkill is called, not when .forceSkill
@@ -3135,6 +3153,8 @@ var QuasiABS = {};
 
   Game_Event.prototype.updateAI = function() {
     if (!this.hasAI() || !this.isNearTheScreen()) return;
+    //OZ 17.04.06
+    if (this._isStun) return;
     var bestTarget = this.bestTarget();
     if (!bestTarget) return;
     var targetId = bestTarget === $gamePlayer ? 0 : bestTarget.eventId();

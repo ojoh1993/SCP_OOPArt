@@ -481,6 +481,7 @@ var QuasiABS = {};
         this._skillSettings[skill.id].selecttarget = !settings.groundtarget && settings.selecttarget;
         this._skillSettings[skill.id].range = range || 0;
         this._skillSettings[skill.id].passabilityLevel = settings.passabilityLevel || 0;
+        this._skillSettings[skill.id].offset = settings.offset || 0;
         //OZ 2017.03.07
         this._skillSettings[skill.id].requireditem = settings.requireditem || 0;
         this._skillSettings[skill.id].requireditemamount = settings.requireditemamount || 1;
@@ -2670,6 +2671,8 @@ var QuasiABS = {};
     skill.sequencer = new Skill_Sequencer(this, skill);
     skill.userDirection = this._direction;
     skill.radian = this.directionToRadian(this._direction) || this._radian; 
+    if(forced)
+      skill.radian = this._radian;
     this._radian = null;
     skill.direction = this._direction;
     skill.targetsHit = [];

@@ -2068,11 +2068,6 @@ var QuasiMovement = {};
   Game_CharacterBase.prototype.update = function() {
     var prevX = this._realPX;
     var prevY = this._realPY;
-    if (this.hasOwnProperty('_battler')
-        && this._battler 
-        && this._battler._locationFixed){
-      return;
-    } 
     if (this.collider().constructor === Object) {
       this.reloadBoxes();
     }

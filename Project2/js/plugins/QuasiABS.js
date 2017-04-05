@@ -2518,9 +2518,9 @@ var QuasiABS = {};
         this._isStun=true;
         var x = this.cx();
         var y = this.cy();
-        QuasiABS.Manager.startAnimation(132, x, y);
+        //QuasiABS.Manager.startAnimation(132, x, y);
         this._OZ_substitute_check_moveType=this._moveType;
-        this._moveType=0;    
+        this._moveType=0;
       }
       this.updateSkills();
       this.battler().updateABS();
@@ -3135,6 +3135,8 @@ var QuasiABS = {};
 
   Game_Event.prototype.updateAI = function() {
     if (!this.hasAI() || !this.isNearTheScreen()) return;
+    //OZ 17.04.06
+    if (this._isStun) return;
     var bestTarget = this.bestTarget();
     if (!bestTarget) return;
     var targetId = bestTarget === $gamePlayer ? 0 : bestTarget.eventId();
